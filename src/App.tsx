@@ -1,36 +1,77 @@
-import styled from "styled-components";
+// Styles
+import {
+  Wrapper,
+  Content,
+  Header,
+  Button,
+  CheckAllContainer,
+  OtherButtonsContainer,
+  FilterButton,
+} from "./App.styles";
 
-function App() {
+// Components
+import NoTodos from "./components/NoTodos";
+import TodoForm from "./components/TodoForm";
+import TodoList from "./components/TodoList";
+import { useGlobalContext } from "./Context";
+
+const App = () => {
+  const { todos, isAllCompleted, checkAll, clearCompleted } =
+    useGlobalContext();
+
   return (
     <Wrapper>
       <Content>
         <Header>Todo App</Header>
+        <TodoForm />
+
+        {todos.length ? <TodoList todos={todos} /> : <NoTodos />}
+
+        {isAllCompleted() ? null : (
+          <CheckAllContainer>
+            <Button onClick={checkAll}>Check All</Button>
+
+            <span>
+              {todos.filter((ch) => !ch.isCompleted).length} items remaining.
+            </span>
+          </CheckAllContainer>
+        )}
+
+        <OtherButtonsContainer>
+          {isAllCompleted() ? null : (
+            <div>
+              <FilterButton
+                active
+                onClick={() => {
+                  /* setFilter("All") */
+                }}
+              >
+                All
+              </FilterButton>
+              <FilterButton
+                onClick={() => {
+                  /* setFilter("Active") */
+                }}
+              >
+                Active
+              </FilterButton>
+              <FilterButton
+                onClick={() => {
+                  /* setFilter("Completed") */
+                }}
+              >
+                Completed
+              </FilterButton>
+            </div>
+          )}
+
+          {todos.length ? (
+            <Button onClick={clearCompleted}>Clear completed</Button>
+          ) : null}
+        </OtherButtonsContainer>
       </Content>
     </Wrapper>
   );
-}
-
-const Wrapper = styled.main`
-  min-height: 100vh;
-  padding: 10px;
-  background: #f3f4f6;
-`;
-
-const Content = styled.div`
-  margin: auto;
-  margin-top: 30px;
-  padding: 2rem;
-  background: white;
-  border-radius: 0.25rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  max-width: 32rem;
-  color: #374151;
-`;
-
-const Header = styled.h2`
-  font-size: 1.5rem;
-  font-weight: bold;
-`;
+};
 
 export default App;
